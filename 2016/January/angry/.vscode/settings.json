@@ -1,0 +1,7 @@
+{
+  "files.associations": {
+    "*.c": "c",
+    "initializer_list": "cpp",
+    "valarray": "cpp"
+  }
+}
