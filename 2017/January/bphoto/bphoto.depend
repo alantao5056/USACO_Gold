@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1694289318 source:c:\usaco_gold\2017\january\bphoto\main.cpp
+	<bits/stdc++.h>
+	<ext/pb_ds/assoc_container.hpp>
+	<ext/pb_ds/tree_policy.hpp>
+	<vector>
+	<iostream>
+	<ostream>
+
