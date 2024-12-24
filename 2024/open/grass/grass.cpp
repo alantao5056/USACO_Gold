@@ -4,73 +4,69 @@
 
 using namespace __gnu_pbds;
 using namespace std;
+using pii = pair<int, int>;
 
-struct Point {
-  int pos;
-  bool start;
-  int other;
-};
-
-struct less_than_key
-{
-    inline bool operator() (const Point& struct1, const Point& struct2)
-    {
-        return (struct1.pos < struct2.pos);
-    }
-};
+const int MOD = 1e9+7;
 
 typedef tree<
-int,
+pii,
 null_type,
-less<int>,
+less<pii>,
 rb_tree_tag,
 tree_order_statistics_node_update>
 ordered_set;
 
+struct Seg {
+  int l, r, k;
+};
+
 int N;
 
 int main() {
-  freopen("grass.in", "r", stdin);
-  freopen("grass.out", "w", stdout);
+  // freopen("grass.in", "r", stdin);
+  // freopen("grass.out", "w", stdout);
 
   cin >> N;
+  ordered_set start;
+  ordered_set end;
+  set<pii> ks;
+  set<pii> len;
+  vector<Seg> grass(N);
+  for (int i = 0; i < N; i++) {
+    int l, r, k; cin >> l >> r >> k;
+    grass[i].l = l;
+    grass[i].r = r;
+    grass[i].k = k;
 
-  vector<Point> points;
+    start.insert({l, i});
+    end.insert({r, i});
+    ks.insert({k, i});
+    len.insert({r-l, i});
+  }
+
+  vector<int> ans(N);
+
+  while (ks.size()) {
+    int cur = ks.begin()->second;
+    ks.erase(ks.begin());
+
+    while (len.size() && len.begin()->first < grass[cur].k) {
+      int temp = len.begin()->second;
+      len.erase(len.begin());
+      start.erase({grass[temp].l, temp});
+      end.erase({grass[temp].r, temp});
+      ks.erase({grass[temp].k, temp});
+    }
+
+    int s = start.size() - start.order_of_key(make_pair(grass[cur].r - grass[cur].k, MOD));
+    int e = end.order_of_key(make_pair(grass[cur].l + grass[cur].k, -1));
+
+    ans[cur] = len.size() - s - e;
+  }
 
   for (int i = 0; i < N; i++) {
-    int a, b, c;
-    cin >> a >> b >> c;
-
-    Point p = Point();
-    p.pos = a;
-    p.start = true;
-    p.other = b;
-
-    Point p2 = Point();
-    p2.pos = b;
-    p2.start = false;
-    p2.other = a;
-
-    points.push_back(p);
-    points.push_back(p2);
+    cout << ans[i]-1 << endl;
   }
 
-  sort(points.begin(), points.end(), less_than_key());
-
-  ordered_set os;
-
-  os.insert(4);
-  os.insert(4);
-  os.erase(4);
-  cout << *os.find_by_order(0) << endl;
-
-  for (Point p : points) {
-    if (p.start) {
-      
-    } else {
-
-    }
-  }
-  
   return 0;
 }
